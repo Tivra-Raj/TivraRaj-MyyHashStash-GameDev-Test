@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Bullet;
+using Player;
 using UnityEngine;
 using Utilities;
 
@@ -6,21 +7,22 @@ namespace Service
 {
     public class GameService : GenericMonoSingleton<GameService>
     {
-        private PlayerController playerController;
-
         [Header("Services")]
+        private PlayerService playerService;
 
         [Header("Prefabs")]
         [SerializeField] private PlayerView playerPrefab;
+        [SerializeField] private BulletView bullerPrefab;
 
         [Header("Scriptable Objects/ Data")]
         [SerializeField] private PlayerModel playerData;
+        [SerializeField] private BulletModel bulletData;
 
         private void Start()
         {
-            playerController = new PlayerController(playerPrefab, playerData);
+            playerService = new PlayerService(playerPrefab, playerData, bullerPrefab, bulletData);
         }
 
-        public PlayerController GetPlayerController() => playerController;
+        public PlayerService GetPlayerService() => playerService;
     }
 }
