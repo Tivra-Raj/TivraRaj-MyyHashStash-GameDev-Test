@@ -260,7 +260,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3465723368508495416}
+  bullerPrefab: {fileID: 1699974065778377436, guid: 4e94ab03ecbc0514f8dc259d5c77c398, type: 3}
   playerData: {fileID: 11400000, guid: e25f103bff9b5974bbb5b0cd964b4cd4, type: 2}
+  bulletData: {fileID: 11400000, guid: ce9372f12c83dde49b6ca2db233dbf46, type: 2}
 --- !u!1001 &3465723368508495415
 PrefabInstance:
   m_ObjectHideFlags: 0

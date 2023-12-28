@@ -7,10 +7,12 @@ namespace Player
         public PlayerController PlayerController { get; private set; }
 
         [SerializeField] private Transform TurretBasePoint;
+        [SerializeField] private Transform cannonFireLocation;
 
         private void Update()
         {
             PlayerController.HandleRotationInput();
+            PlayerController.HandleShooting(cannonFireLocation);
         }
 
         private void FixedUpdate()

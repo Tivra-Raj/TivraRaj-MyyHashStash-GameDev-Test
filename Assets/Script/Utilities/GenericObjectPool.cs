@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System;
-using UnityEngine;
 
 namespace Utilities
 {
-    public class GenericObjectPool<T> : MonoBehaviour
+    public class GenericObjectPool<T> where T : class
     {
         public List<PooledItem<T>> pooledItems = new List<PooledItem<T>>();
 
