@@ -60,5 +60,12 @@ namespace Player
             BulletController bulletToFire = bulletPool.GetBullet();
             bulletToFire.ConfigureBullet(fireLocation);
         }
+
+        public void TakeDamage(int damageToTake)
+        {
+            //currentHealth -= damageToTake;
+            //if (currentHealth <= 0)
+               // PlayerDeath();
+        }
     }
 }
