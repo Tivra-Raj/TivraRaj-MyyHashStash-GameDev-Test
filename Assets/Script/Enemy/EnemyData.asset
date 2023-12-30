@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 0
   HelicopterSpeed: 5
-  ParatrooperSpeed: 1
+  ParatrooperSpeed: 10
   DamageToInflict: 0

@@ -1,4 +1,5 @@
-﻿using Service;
+﻿using Events;
+using Service;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,14 +14,21 @@ namespace Enemy
         private List<EnemyParatrooperController> leftParatroopers = new List<EnemyParatrooperController>();
         private List<EnemyParatrooperController> rightParatroopers = new List<EnemyParatrooperController>();
 
+        private bool canSpawn;
+        private bool paratrooperReachedLeftSide;
+        private bool paratrooperReachedRightSide;
+        private bool isMovingParatroopers;
+        private int indexOfEnemyToMove;
+
         public EnemyService(EnemyView enemyHelicopterPrefab, EnemyView enemyParatrooperPrefab, EnemyModel enemyData)
         {
             this.enemyData = enemyData;
             helicopterPool = new EnemyHelicopterPool(enemyHelicopterPrefab, this.enemyData);
             paratrooperPool = new EnemyParatrooperPool(enemyParatrooperPrefab, this.enemyData);
+            canSpawn = true;
         }
 
-        public void Update(Transform[] spawnPositionAndRotation)
+        public void Spawn(Transform[] spawnPositionAndRotation)
         {
             SpawnHelicopterEnemy(spawnPositionAndRotation);
         }
@@ -35,11 +43,24 @@ namespace Enemy
 
         public void SpawnParatrooperEnemy(Transform spawnPositionAndRotation)
         {
+            if (!canSpawn)
+                return;
+
             EnemyParatrooperController paratrooper = (EnemyParatrooperController)paratrooperPool.GetEnemy();
             SpawnEnemyAtPosition(paratrooper, spawnPositionAndRotation);
             paratrooperPool.GetActiveParatroopers().Add(paratrooper);
-
             AddEachSideSpawnedParatrooperToList(paratrooper);
+            UpdateCanSpawn();
+        }
+
+        private void UpdateCanSpawn()
+        {
+            if (leftParatroopers.Count >= 4 || rightParatroopers.Count >= 4)
+            {
+                canSpawn = false;
+                return;
+            }
+                canSpawn = true;
         }
 
         private void AddEachSideSpawnedParatrooperToList(EnemyParatrooperController enemyParatrooper)
@@ -47,10 +68,39 @@ namespace Enemy
             if (enemyParatrooper.enemyView.transform.position.x < GameService.Instance.GetPlayerPrefab().transform.position.x)
             {
                 leftParatroopers.Add(enemyParatrooper);
+
+                if (leftParatroopers.Count >= 4)
+                    paratrooperReachedLeftSide = true;
+                Debug.Log("all troop reached left side : " + paratrooperReachedLeftSide);
             }
             else
             {
                 rightParatroopers.Add(enemyParatrooper);
+
+                if (rightParatroopers.Count >= 4)
+                    paratrooperReachedRightSide = true;
+                Debug.Log("all troop reached right side : " + paratrooperReachedRightSide);
+            }
+           
+        }
+        
+        public void MoveParatroopersTowardsTurret()
+        {
+            if (!isMovingParatroopers)
+            {
+                isMovingParatroopers = true;
+
+                if (paratrooperReachedLeftSide && indexOfEnemyToMove < leftParatroopers.Count)
+                {
+                    EventService.Instance.InvokeOnFourParatrooperSpawned(leftParatroopers[indexOfEnemyToMove]);
+                }
+
+                if (paratrooperReachedRightSide && indexOfEnemyToMove < rightParatroopers.Count)
+                {
+                    EventService.Instance.InvokeOnFourParatrooperSpawned(rightParatroopers[indexOfEnemyToMove]);
+                }
+
+                indexOfEnemyToMove++;
             }
         }
 
@@ -67,7 +117,6 @@ namespace Enemy
             }
             else if (enemyToReturn is EnemyParatrooperController paratrooper)
             {
-                // Remove the paratrooper from the active list before returning it to the pool.
                 if (leftParatroopers.Contains(paratrooper))
                 {
                     leftParatroopers.Remove(paratrooper);
@@ -80,16 +129,6 @@ namespace Enemy
                 paratrooperPool.RemoveFromActiveParatroopers(paratrooper);
                 paratrooperPool.ReturnItem(paratrooper);
             }
-        }
-
-        public List<EnemyParatrooperController> GetLeftParatrooper()
-        {
-            return leftParatroopers;
-        }
-
-        public List<EnemyParatrooperController> GetRightParatrooper()
-        {
-            return rightParatroopers;
         }
     }
 }

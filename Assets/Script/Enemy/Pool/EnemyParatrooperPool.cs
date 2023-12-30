@@ -11,7 +11,6 @@ namespace Enemy
         protected override EnemyController CreateItem()
         {
             var paratrooper = new EnemyParatrooperController(enemyPrefab, enemyData);
-            activeParatroopers.Add(paratrooper);
             return paratrooper;
         }
 

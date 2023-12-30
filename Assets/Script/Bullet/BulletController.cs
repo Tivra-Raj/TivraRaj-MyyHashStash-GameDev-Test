@@ -1,4 +1,5 @@
-﻿using Service;
+﻿using Interface;
+using Service;
 using UnityEngine;
 
 namespace Bullet
@@ -26,12 +27,26 @@ namespace Bullet
 
         public void OnBulletEnterTrigger(GameObject collidedGameObject)
         {
-            /*if (collidedGameObject.GetComponent<IDamageable>() != null)
+            if (collidedGameObject.GetComponent<IDamageable>() != null)
             {
-                collidedGameObject.GetComponent<IDamageable>().TakeDamage(bulletScriptableObject.damage);
-                bulletView.gameObject.SetActive(false);
-                GameService.Instance.GetPlayerController().ReturnBulletToPool(this);
-            }*/
+                collidedGameObject.GetComponent<IDamageable>().TakeDamage(bulletData.damage);
+                DestroyBullet();
+            }
+        }
+
+        public void CheckIfBulletGoingOffScreen()
+        {
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(bulletView.transform.position);
+            if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height)
+            {
+                DestroyBullet();
+            }
+        }
+
+        private void DestroyBullet()
+        {
+            bulletView.gameObject.SetActive(false);
+            GameService.Instance.GetPlayerService().ReturnBulletToPool(this);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using Interface;
+using UnityEngine;
 
 namespace Enemy
 {
-    public class EnemyView : MonoBehaviour
+    public class EnemyView : MonoBehaviour, IDamageable
     {
         private EnemyController enemyController;
-        public Rigidbody2D EnemyRigidbody;
+        [SerializeField] private Rigidbody2D EnemyRigidbody;
+        [SerializeField] private GameObject Parachute;
 
         public void SetController(EnemyController enemyController) => this.enemyController = enemyController;
 
@@ -24,17 +26,8 @@ namespace Enemy
             enemyController.GetOnTrigger2D(collision);
             enemyController?.OnEnemyCollided(collision.gameObject);
         }
-        
 
         public void TakeDamage(int damageToTake) => enemyController.TakeDamage(damageToTake);
-
-        public bool isOnLeftSide { get; private set; }
-
-        // Add a method to set the side during initialization
-        public void SetSide(bool leftSide)
-        {
-            isOnLeftSide = leftSide;
-        }
 
         public Rigidbody2D GetEnemyRigibody()
         {
@@ -42,5 +35,7 @@ namespace Enemy
                 return EnemyRigidbody;
             return null;
         }
+
+        public GameObject GetEnemyParachute() => Parachute;
     }
 }

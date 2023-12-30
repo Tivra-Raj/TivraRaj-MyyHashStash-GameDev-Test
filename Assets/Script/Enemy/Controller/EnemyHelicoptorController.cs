@@ -34,11 +34,11 @@ namespace Enemy
         {
             if (other.CompareTag("ParatrooperSpawner"))
             {
-                int chance = Random.Range(0, 5);
+                int chance;
+                chance= Random.Range(0, 5);
                 if (chance == 0)
                 {
-                    if(GameService.Instance.GetEnemyService().GetLeftParatrooper().Count <=4 || GameService.Instance.GetEnemyService().GetRightParatrooper().Count <=4)
-                        GameService.Instance.GetEnemyService().SpawnParatrooperEnemy(other.transform);
+                    GameService.Instance.GetEnemyService().SpawnParatrooperEnemy(other.transform);
                 }
             }
         }

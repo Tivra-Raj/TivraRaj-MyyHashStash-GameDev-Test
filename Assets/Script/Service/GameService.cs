@@ -26,35 +26,40 @@ namespace Service
         [Header("Enemy Position")]
         [SerializeField] private Transform[] enemyHelicopterSpawnPosition;
 
+        [Header("Miscellaneous")]
+        [SerializeField] private Transform GroundObject;
+        private int totalNoOfHelicoperSpawned;
+
         private void Start()
         {
             playerService = new PlayerService(playerPrefab, playerData, bullerPrefab, bulletData);
-            enemyService = new EnemyService(enemyHelicopterPrefab, enemyParatrooperPrefab, enemyData);  
-            Spawn();
+            enemyService = new EnemyService(enemyHelicopterPrefab, enemyParatrooperPrefab, enemyData);   
         }
 
         private void OnEnable()
         {
-            //InvokeRepeating(nameof(Spawn), 2f, 2f);
+            if(totalNoOfHelicoperSpawned != 5)
+            {
+                InvokeRepeating(nameof(Spawn), 2f, 5f);
+            }
         }
 
         private void Update() 
         {
-            int left = enemyService.GetLeftParatrooper().Count;
-            Debug.Log("Left List" + left);
-
-            int right = enemyService.GetLeftParatrooper().Count;
-            Debug.Log("Right List" + right);
+            enemyService?.MoveParatroopersTowardsTurret();
         }
 
         public void Spawn()
         {
-            enemyService?.Update(enemyHelicopterSpawnPosition);
+            enemyService?.Spawn(enemyHelicopterSpawnPosition);
+            totalNoOfHelicoperSpawned++;
         }
 
         public PlayerService GetPlayerService() => playerService;
         public PlayerView GetPlayerPrefab() => playerPrefab;
 
-        public EnemyService GetEnemyService() => enemyService;    
+        public EnemyService GetEnemyService() => enemyService;
+        
+        public Transform GetGroundPosition() => GroundObject.transform;
     }
 }
