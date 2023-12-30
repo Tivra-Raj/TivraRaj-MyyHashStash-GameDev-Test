@@ -17,7 +17,7 @@ namespace Enemy
 
         public override void GetFixedUpdate()
         {
-            HelicopterMovement();
+            HandleHelicopterMovement();
         }
 
         public override void GetOnTrigger2D(Collider2D other)
@@ -25,9 +25,9 @@ namespace Enemy
             OnCollideWithOtherobject(other);
         }
 
-        private void HelicopterMovement()
+        private void HandleHelicopterMovement()
         {
-            enemyView.transform.Translate(Vector3.right * enemyData.Speed * Time.deltaTime);
+            enemyView.transform.Translate(Vector3.right * enemyData.HelicopterSpeed * Time.deltaTime);
         }
 
         private void OnCollideWithOtherobject(Collider2D other)
@@ -37,7 +37,8 @@ namespace Enemy
                 int chance = Random.Range(0, 5);
                 if (chance == 0)
                 {
-                    GameService.Instance.GetEnemyService().SpawnEnemiesOfType2(other.transform);
+                    if(GameService.Instance.GetEnemyService().GetLeftParatrooper().Count <=4 || GameService.Instance.GetEnemyService().GetRightParatrooper().Count <=4)
+                        GameService.Instance.GetEnemyService().SpawnParatrooperEnemy(other.transform);
                 }
             }
         }

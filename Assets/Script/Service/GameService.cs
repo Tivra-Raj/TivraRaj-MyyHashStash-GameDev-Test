@@ -38,9 +38,13 @@ namespace Service
             //InvokeRepeating(nameof(Spawn), 2f, 2f);
         }
 
-        private void Update()
+        private void Update() 
         {
-            
+            int left = enemyService.GetLeftParatrooper().Count;
+            Debug.Log("Left List" + left);
+
+            int right = enemyService.GetLeftParatrooper().Count;
+            Debug.Log("Right List" + right);
         }
 
         public void Spawn()
@@ -49,7 +53,8 @@ namespace Service
         }
 
         public PlayerService GetPlayerService() => playerService;
+        public PlayerView GetPlayerPrefab() => playerPrefab;
 
-        public EnemyService GetEnemyService() => enemyService;
+        public EnemyService GetEnemyService() => enemyService;    
     }
 }

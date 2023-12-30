@@ -1,15 +1,28 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace Enemy
 {
     public class EnemyParatrooperPool : EnemyPool
     {
+        private List<EnemyParatrooperController> activeParatroopers = new List<EnemyParatrooperController>();
+
         public EnemyParatrooperPool(EnemyView enemyPrefab, EnemyModel enemyData) : base(enemyPrefab, enemyData) { }
 
         protected override EnemyController CreateItem()
         {
-            return new EnemyParatrooperController(enemyPrefab, enemyData);
+            var paratrooper = new EnemyParatrooperController(enemyPrefab, enemyData);
+            activeParatroopers.Add(paratrooper);
+            return paratrooper;
+        }
+
+        public List<EnemyParatrooperController> GetActiveParatroopers()
+        {
+            return activeParatroopers;
+        }
+
+        public void RemoveFromActiveParatroopers(EnemyParatrooperController paratrooper)
+        {
+            activeParatroopers.Remove(paratrooper);
         }
     }
 }

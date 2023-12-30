@@ -1131,9 +1131,6 @@ MonoBehaviour:
   enemyHelicopterSpawnPosition:
   - {fileID: 1757655156}
   - {fileID: 368939187}
-  enemyParatrooperSpawnPosition:
-  - {fileID: 194796876}
-  - {fileID: 26184080}
 --- !u!1 &2113491381
 GameObject:
   m_ObjectHideFlags: 0

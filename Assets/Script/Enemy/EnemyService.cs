@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Service;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -8,29 +10,48 @@ namespace Enemy
         private EnemyHelicopterPool helicopterPool;
         private EnemyParatrooperPool paratrooperPool;
 
-        public EnemyService(EnemyView enemyPrefabType1, EnemyView enemyPrefabType2, EnemyModel enemyData)
+        private List<EnemyParatrooperController> leftParatroopers = new List<EnemyParatrooperController>();
+        private List<EnemyParatrooperController> rightParatroopers = new List<EnemyParatrooperController>();
+
+        public EnemyService(EnemyView enemyHelicopterPrefab, EnemyView enemyParatrooperPrefab, EnemyModel enemyData)
         {
             this.enemyData = enemyData;
-            this.helicopterPool = new EnemyHelicopterPool(enemyPrefabType1, enemyData);
-            this.paratrooperPool = new EnemyParatrooperPool(enemyPrefabType2, enemyData);
+            helicopterPool = new EnemyHelicopterPool(enemyHelicopterPrefab, this.enemyData);
+            paratrooperPool = new EnemyParatrooperPool(enemyParatrooperPrefab, this.enemyData);
         }
 
-        public void Update(Transform[] spawnPositionsForType1)
+        public void Update(Transform[] spawnPositionAndRotation)
         {
-            SpawnEnemiesOfType1(spawnPositionsForType1);
+            SpawnHelicopterEnemy(spawnPositionAndRotation);
         }
 
-        private void SpawnEnemiesOfType1(Transform[] spawnPositions)
+        private void SpawnHelicopterEnemy(Transform[] spawnPositionAndRotation)
         {
-            foreach (var position in spawnPositions)
+            foreach (var position in spawnPositionAndRotation)
             {
                 SpawnEnemyAtPosition(helicopterPool.GetEnemy(), position);
             }
         }
 
-        public void SpawnEnemiesOfType2(Transform spawnPositions)
+        public void SpawnParatrooperEnemy(Transform spawnPositionAndRotation)
         {
-            SpawnEnemyAtPosition(paratrooperPool.GetEnemy(), spawnPositions);
+            EnemyParatrooperController paratrooper = (EnemyParatrooperController)paratrooperPool.GetEnemy();
+            SpawnEnemyAtPosition(paratrooper, spawnPositionAndRotation);
+            paratrooperPool.GetActiveParatroopers().Add(paratrooper);
+
+            AddEachSideSpawnedParatrooperToList(paratrooper);
+        }
+
+        private void AddEachSideSpawnedParatrooperToList(EnemyParatrooperController enemyParatrooper)
+        {
+            if (enemyParatrooper.enemyView.transform.position.x < GameService.Instance.GetPlayerPrefab().transform.position.x)
+            {
+                leftParatroopers.Add(enemyParatrooper);
+            }
+            else
+            {
+                rightParatroopers.Add(enemyParatrooper);
+            }
         }
 
         private void SpawnEnemyAtPosition(EnemyController enemy, Transform spawnPositionAndRotation)
@@ -40,15 +61,35 @@ namespace Enemy
 
         public void ReturnEnemyToPool(EnemyController enemyToReturn)
         {
-            if (enemyToReturn is EnemyHelicoptorController) // Assuming EnemyType1 and EnemyType2 are the two derived classes
+            if (enemyToReturn is EnemyHelicoptorController)
             {
                 helicopterPool.ReturnItem(enemyToReturn);
             }
-            else if (enemyToReturn is EnemyParatrooperController)
+            else if (enemyToReturn is EnemyParatrooperController paratrooper)
             {
-                paratrooperPool.ReturnItem(enemyToReturn);
+                // Remove the paratrooper from the active list before returning it to the pool.
+                if (leftParatroopers.Contains(paratrooper))
+                {
+                    leftParatroopers.Remove(paratrooper);
+                }
+                else if (rightParatroopers.Contains(paratrooper))
+                {
+                    rightParatroopers.Remove(paratrooper);
+                }
+
+                paratrooperPool.RemoveFromActiveParatroopers(paratrooper);
+                paratrooperPool.ReturnItem(paratrooper);
             }
-            // Add additional conditions for more enemy types if needed
+        }
+
+        public List<EnemyParatrooperController> GetLeftParatrooper()
+        {
+            return leftParatroopers;
+        }
+
+        public List<EnemyParatrooperController> GetRightParatrooper()
+        {
+            return rightParatroopers;
         }
     }
 }

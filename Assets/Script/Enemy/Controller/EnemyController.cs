@@ -8,7 +8,7 @@ namespace Enemy
     public abstract class EnemyController : IDamageable
     {
         // Dependencies:
-        protected EnemyView enemyView;
+        public EnemyView enemyView {  get; private set; }
         protected EnemyModel enemyData;
 
         // Variables:

@@ -6,7 +6,8 @@ namespace Enemy
     public class EnemyModel : ScriptableObject
     {
         public int MaxHealth;
-        public float Speed;
+        public float HelicopterSpeed;
+        public float ParatrooperSpeed;
         public int DamageToInflict;
     }
 }
