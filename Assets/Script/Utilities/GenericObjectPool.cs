@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System;
 
 namespace Utilities
 {
-    public class GenericObjectPool<T> where T : class
+    public abstract class GenericObjectPool<T> where T : class
     {
         public List<PooledItem<T>> pooledItems = new List<PooledItem<T>>();
 
@@ -30,10 +29,7 @@ namespace Utilities
             return newItem.Item;
         }
 
-        protected virtual T CreateItem()
-        {
-            throw new NotImplementedException("CreateItem() method not implemented in derived class");
-        }
+        protected abstract T CreateItem();
 
         public virtual void ReturnItem(T item)
         {
